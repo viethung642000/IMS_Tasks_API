@@ -1,0 +1,7 @@
+/.vscode
+/.vs
+/bin
+/obj
+/Migrations
+
+BE.csproj.user
