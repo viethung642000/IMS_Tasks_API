@@ -1,4 +1,5 @@
-﻿using BE.Services.Managers;
+﻿using BE.Data.Dtos;
+using BE.Services.Managers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BE.Controllers
@@ -20,12 +21,26 @@ namespace BE.Controllers
         }
         #endregion
 
-        [HttpGet("getAllAsync")]
+        [HttpGet("getAll")]
         public async Task<IActionResult> getAllAsync()
         {
             try
             {
                 return Ok(await _tasksManager.GetAllTasksAsync());
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex.Message, ex.InnerException);
+                return StatusCode(500);
+            }
+        }
+        [HttpPost("addTask")]
+        public async Task<IActionResult> addTaskAsync(TaskDto task)
+        {
+            try
+            {
+                await _tasksManager.AddTask(task);
+                return Ok();
             }
             catch(Exception ex)
             {
