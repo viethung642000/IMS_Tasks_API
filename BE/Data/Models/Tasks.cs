@@ -1,9 +1,9 @@
 ﻿using BE.Data.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace BE.Data.Models
 {
-    public class Tasks
-    {
+    public class Tasks { 
         public int idTask { get; set; }
         public int idParent { get; set; }
         public string taskName { get; set; }

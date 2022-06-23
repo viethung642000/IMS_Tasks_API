@@ -33,5 +33,31 @@ namespace BE.Controllers
                 return StatusCode(500);
             }
         }
+        [HttpGet("getTaskById")]
+        public async Task<IActionResult> getTaskById(int id)
+        {
+            try
+            {
+                return Ok(await _tasksManager.getTaskByIdAsync(id));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex.InnerException);
+                return StatusCode(500);
+            }
+        }
+        [HttpGet("getTaskChild")]
+        public async Task<IActionResult> getTaskChild(int id)
+        {
+            try
+            {
+                return Ok(await _tasksManager.getTaskChild(id));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex.InnerException);
+                return StatusCode(500);
+            }
+        }
     }
 }
