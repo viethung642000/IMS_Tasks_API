@@ -25,7 +25,7 @@ namespace BE.Controllers
         {
             try
             {
-                return Ok(await _tasksManager.GetAllAsync());
+                return Ok(await _tasksManager.GetAllTasksAsync());
             }
             catch(Exception ex)
             {
