@@ -1,4 +1,5 @@
-﻿using BE.Services.Managers;
+﻿using BE.Data.Dtos;
+using BE.Services.Managers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BE.Controllers
@@ -20,7 +21,7 @@ namespace BE.Controllers
         }
         #endregion
 
-        [HttpGet("getAllAsync")]
+        [HttpGet("getAll")]
         public async Task<IActionResult> getAllAsync()
         {
             try
@@ -52,6 +53,47 @@ namespace BE.Controllers
             try
             {
                 return Ok(await _tasksManager.getTaskChild(id));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex.InnerException);
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPost("addTask")]
+        public async Task<IActionResult> addTaskAsync(TaskDto task)
+        {
+            try
+            {
+                await _tasksManager.AddTask(task);
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex.Message, ex.InnerException);
+                return StatusCode(500);
+            }
+        }
+        [HttpGet("getTaskParent")]
+        public async Task<IActionResult> getTaskParent(int id)
+        {
+            try
+            {
+                return Ok(await _tasksManager.getTaskParent(id));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex.InnerException);
+                return StatusCode(500);
+            }
+        }
+        [HttpPut("DeleteTaskById")]
+        public async Task<IActionResult> DeleteTaskById(int id)
+        {
+            try
+            {
+                return Ok(await _tasksManager.getTaskParent(id));
             }
             catch (Exception ex)
             {
