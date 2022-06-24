@@ -4,6 +4,7 @@ using BE.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using BE.Data.Enums;
 
 namespace BE.Controllers
 {
@@ -141,7 +142,8 @@ namespace BE.Controllers
         {
             try
             {
-                return Ok(await _tasksManager.getTaskByIdAsync(id));
+                var result = await _context.tasks.Where(t => t.idTask == id).ToListAsync();
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -150,11 +152,12 @@ namespace BE.Controllers
             }
         }
         [HttpGet("getTaskChild")]
-        public async Task<IActionResult> getTaskChild(int id)
+        public async Task<ActionResult<List<Tasks>>> getTaskChild(int id)
         {
             try
             {
-                return Ok(await _tasksManager.getTaskChild(id));
+                var result = await _context.tasks.Where(t => t.idParent == id).ToListAsync();
+                return Ok(result.ToList());
             }
             catch (Exception ex)
             {
@@ -244,7 +247,9 @@ namespace BE.Controllers
         {
             try
             {
-                return Ok(await _tasksManager.getTaskParent(id));
+                var task = await _context.tasks.SingleOrDefaultAsync(h => h.idTask == id);
+                var resutl = await _context.tasks.FirstOrDefaultAsync(t => t.idTask == task.idParent);
+                return Ok(resutl);
             }
             catch (Exception ex)
             {
@@ -252,12 +257,13 @@ namespace BE.Controllers
                 return StatusCode(500);
             }
         }
-        [HttpPut("DeleteTaskById")]
-        public async Task<IActionResult> DeleteTaskById(int id)
+        [HttpGet("getTasksByTag")]
+        public async Task<ActionResult<List<Tasks>>> getTasksByTagAsync(Tags tag)
         {
             try
             {
-                return Ok(await _tasksManager.getTaskParent(id));
+                var resutl = await _context.tasks.Where(t => t.tag == tag).ToListAsync();
+                return Ok(resutl);
             }
             catch (Exception ex)
             {
