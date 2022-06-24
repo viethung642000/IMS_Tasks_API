@@ -32,7 +32,7 @@ namespace BE.Controllers
         {
             try
             {
-                var result = _context.tasks.ToList();
+                var result = await _context.tasks.ToListAsync();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -47,7 +47,7 @@ namespace BE.Controllers
         {
             try
             {
-                var result = _context.tasks.Where(t => t.idProject == idProject);
+                var result = await _context.tasks.Where(t => t.idProject == idProject).ToListAsync();
                 if(!result.ToList().Any())
                 {
                     return NotFound("Don't found task in project!!!");
@@ -66,7 +66,7 @@ namespace BE.Controllers
         {
             try
             {
-                var result = _context.tasks.Where(t => t.assignee == idAssignee);
+                var result = await _context.tasks.Where(t => t.assignee == idAssignee).ToListAsync();
                 if (!result.ToList().Any())
                 {
                     return NotFound("Don't found task of Assignee!!!");
@@ -85,7 +85,7 @@ namespace BE.Controllers
         {
             try
             {
-                var result = _context.tasks.Where(t => t.startTaskDate <= time && t.endTaskDate >= time);
+                var result = await _context.tasks.Where(t => t.startTaskDate <= time && t.endTaskDate >= time).ToListAsync();
                 if (!result.ToList().Any())
                 {
                     return NotFound("Don't found task in date!!!");
@@ -104,7 +104,7 @@ namespace BE.Controllers
         {
             try
             {
-                var result = _context.tasks.Where(t => t.endTaskDate < DateTime.Now);
+                var result = await _context.tasks.Where(t => t.endTaskDate < DateTime.Now).ToListAsync();
                 if (!result.ToList().Any())
                 {
                     return NotFound("Don't found task expired!!!");
@@ -123,7 +123,7 @@ namespace BE.Controllers
         {
             try
             {
-                var result = _context.tasks.Where(t => t.isDeleted == true);
+                var result = await _context.tasks.Where(t => t.isDeleted == true).ToListAsync();
                 if (result.ToList().Any())
                 {
                     return NotFound("Don't found task expired!!!");
@@ -228,13 +228,15 @@ namespace BE.Controllers
         {
             try
             {
-                var result = _context.tasks.SingleOrDefault(h => h.idTask == idTask);
-                if (result != null)
+                var resultChilds = await _context.tasks.Where(t => t.idParent == idTask).ToListAsync();
+                if (!resultChilds.Any())
                 {
+                    var result = await _context.tasks.FindAsync(idTask);
                     result.isDeleted = true;
+                    await _context.SaveChangesAsync();
+                    return Ok("Remove task success");
                 }
-                await _context.SaveChangesAsync();
-                return Ok("Deleted task success");
+                return BadRequest("Task have child. Don't remove");
             }
             catch (Exception ex)
             {
