@@ -5,14 +5,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using BE.Helpers;
-using BE.Services.Managers;
+
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
-#region Register Repository
-builder.Services.AddScoped<ITasksManager, TasksManager>();
-#endregion
 
 
 builder.Services.AddControllers();
