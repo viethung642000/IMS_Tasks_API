@@ -8,13 +8,13 @@ namespace BE.Data.Contexts
     public class AppDbContext : DbContext
     {
         #region Constructor
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        public AppDbContext(DbContextOptions options) : base(options)
         {
         }
         #endregion
 
         #region Property
-        DbSet<Tasks> tasks { get; set; }
+        public DbSet<Tasks> tasks { get; set; }
 
         #endregion
 
