@@ -273,5 +273,7 @@ namespace BE.Controllers
                 return StatusCode(500);
             }
         }
+        //[HttpGet("getDaysCompletedAsync")]
+        //public async Task<ActionResult> getDaysCompletedAsync()
     }
 }
