@@ -2,9 +2,9 @@
 {
     public enum Status
     {
-        open,
-        progress,
-        resolve,
-        closed
+        open = 1,
+        progress = 2,
+        resolve = 3,
+        closed = 4
     }
 }

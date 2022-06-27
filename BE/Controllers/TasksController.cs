@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using BE.Data.Enums;
+using System.Globalization;
 
 namespace BE.Controllers
 {
@@ -142,7 +143,7 @@ namespace BE.Controllers
         {
             try
             {
-                var result = await _context.tasks.Where(t => t.idTask == id).ToListAsync();
+                var result = await _context.tasks.SingleOrDefaultAsync(t => t.idTask == id);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -177,6 +178,8 @@ namespace BE.Controllers
                     taskName = task.taskName,
                     description = task.description,
                     assignee = task.assignee,
+                    status = task.status,
+                    tag = task.tags,
                     milestone = task.milestone,
                     startTaskDate = task.startTaskDate,
                     endTaskDate = task.endTaskDate,
@@ -184,7 +187,7 @@ namespace BE.Controllers
                     idProject = task.idProject
                 };
                 _context.tasks.Add(result);
-                await _context.SaveChangesAsync();
+                //await _context.SaveChangesAsync();
                 return Ok("Create task success");
             }
             catch (Exception ex)
@@ -194,7 +197,7 @@ namespace BE.Controllers
             }
         }
         [HttpPut("editTask/{idTask}")]
-        public async Task<ActionResult> editTask(int idTask, TaskDto task)
+        public async Task<ActionResult> editTask(int idTask, TaskEditDto task)
         {
             try
             {
@@ -224,14 +227,14 @@ namespace BE.Controllers
             }
         }
         [HttpPut("deletedTask/{idTask}")] 
-        public async Task<ActionResult> deletedTask(int idTask)
+        public async Task<ActionResult> deletedTask( int id)
         {
             try
             {
-                var resultChilds = await _context.tasks.Where(t => t.idParent == idTask).ToListAsync();
+                var resultChilds = await _context.tasks.Where(t => t.idParent == id).ToListAsync();
                 if (!resultChilds.Any())
                 {
-                    var result = await _context.tasks.FindAsync(idTask);
+                    var result = await _context.tasks.FindAsync(id);
                     result.isDeleted = true;
                     await _context.SaveChangesAsync();
                     return Ok("Remove task success");
@@ -273,7 +276,41 @@ namespace BE.Controllers
                 return StatusCode(500);
             }
         }
-        //[HttpGet("getDaysCompletedAsync")]
-        //public async Task<ActionResult> getDaysCompletedAsync()
+        [HttpGet("getDaysCompletedAsync")]
+        public async Task<ActionResult> getDaysCompletedAsync(int id)
+        {
+            try
+            {
+                var task = await _context.tasks.SingleOrDefaultAsync(h => h.idTask == id);
+
+                if (task != null)
+                {
+
+                    System.TimeSpan result = (TimeSpan)(task.endTaskDate - task.startTaskDate);
+                    int day = result.Days;
+                    return Ok(day);
+                }
+                return NotFound("Task empty!!!");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex.InnerException);
+                return StatusCode(500);
+            }
+        }
+        [HttpGet("getTasksStillDealine")]
+        public async Task<ActionResult<List<Tasks>>> getTasksStillDealine()
+        {
+            try
+            {
+                var result = await _context.tasks.Where(h => DateTime.Now <= h.endTaskDate).ToListAsync();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex.InnerException);
+                return StatusCode(500);
+            }
+        }
     }
 }
