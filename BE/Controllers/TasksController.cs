@@ -177,6 +177,8 @@ namespace BE.Controllers
                     idParent = task.idParent,
                     taskName = task.taskName,
                     description = task.description,
+                    status = task.status,
+                    tag = task.tags,
                     assignee = task.assignee,
                     status = task.status,
                     tag = task.tags,
