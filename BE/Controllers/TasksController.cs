@@ -176,6 +176,8 @@ namespace BE.Controllers
                     idParent = task.idParent,
                     taskName = task.taskName,
                     description = task.description,
+                    status = task.status,
+                    tag = task.tags,
                     assignee = task.assignee,
                     milestone = task.milestone,
                     startTaskDate = task.startTaskDate,
@@ -273,7 +275,19 @@ namespace BE.Controllers
                 return StatusCode(500);
             }
         }
-        //[HttpGet("getDaysCompletedAsync")]
-        //public async Task<ActionResult> getDaysCompletedAsync()
+        [HttpGet("getTasksByStatus")]
+        public async Task<ActionResult<List<Tasks>>> getTasksByStatusAsync (Status status)
+        {
+            try
+            {
+                var resutl = await _context.tasks.Where(t => t.status == status).ToListAsync();
+                return Ok(resutl);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex.InnerException);
+                return StatusCode(500);
+            }
+        }
     }
 }
