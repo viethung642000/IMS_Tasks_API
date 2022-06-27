@@ -168,7 +168,7 @@ namespace BE.Controllers
         }
 
         [HttpPost("addTask")]
-        public async Task<ActionResult<List<TaskDto>>> addTaskAsync(TaskDto task)
+        public async Task<ActionResult<List<TaskDto>>> addTask(TaskDto task)
         {
             try
             {
@@ -180,8 +180,6 @@ namespace BE.Controllers
                     status = task.status,
                     tag = task.tags,
                     assignee = task.assignee,
-                    status = task.status,
-                    tag = task.tags,
                     milestone = task.milestone,
                     startTaskDate = task.startTaskDate,
                     endTaskDate = task.endTaskDate,
@@ -265,7 +263,7 @@ namespace BE.Controllers
             }
         }
         [HttpGet("getTasksByTag")]
-        public async Task<ActionResult<List<Tasks>>> getTasksByTagAsync(Tags tag)
+        public async Task<ActionResult<List<Tasks>>> getTasksByTag(Tags tag)
         {
             try
             {
@@ -278,8 +276,8 @@ namespace BE.Controllers
                 return StatusCode(500);
             }
         }
-        [HttpGet("getDaysCompletedAsync")]
-        public async Task<ActionResult> getDaysCompletedAsync(int id)
+        [HttpGet("getDaysCompleted")]
+        public async Task<ActionResult> getDaysCompleted(int id)
         {
             try
             {
