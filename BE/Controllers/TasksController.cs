@@ -276,6 +276,20 @@ namespace BE.Controllers
                 return StatusCode(500);
             }
         }
+        [HttpGet("getTasksByStatus")]
+        public async Task<ActionResult<List<Tasks>>> getTasksByStatus(Status status)
+        {
+            try
+            {
+                var resutl = await _context.tasks.Where(t => t.status == status).ToListAsync();
+                return Ok(resutl);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex.InnerException);
+                return StatusCode(500);
+            }
+        }
         [HttpGet("getDaysCompleted")]
         public async Task<ActionResult> getDaysCompleted(int id)
         {
